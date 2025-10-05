@@ -1,0 +1,55 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Kart Companion",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#3498db",
+    "light": "#f1c40f",
+    "dark": "#217dbb"
+  },
+  "topbarCtaButton": {
+    "name": "Download Extension",
+    "url": "https://chromewebstore.google.com/detail/bohhelmgldjclickdnlodllfkmgfjonf?utm_source=item-share-cb"
+  },
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/..."
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/HibouDevv/KartCompanionDocs"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "index",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "User Guide",
+      "pages": [
+        "user-guide"
+      ]
+    },
+    {
+      "group": "Developer Guide",
+      "pages": [
+        "developer-guide"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "discord": "https://discord.gg/...",
+    "github": "https://github.com/HibouDevv/KartCompanionDocs"
+  }
+}

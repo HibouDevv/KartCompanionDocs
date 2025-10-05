@@ -1,0 +1,406 @@
+---
+title: Developer Guide
+description: Technical documentation for Kart Companion development
+---
+
+# Developer Guide
+
+Welcome to the Kart Companion developer documentation. This guide covers the technical architecture, development setup, and contribution guidelines for the project.
+
+## Project Overview
+
+### Architecture
+
+Kart Companion is built as a Chrome Manifest V3 extension with the following components:
+
+- **Extension Core**: Manifest, background service, popup UI
+- **Content Scripts**: Injected into smashkarts.io for data collection
+- **Background Service**: Handles Firebase sync and message passing
+- **Website**: Static promotional site with shared features
+
+### Technology Stack
+
+- **Frontend**: HTML, CSS, JavaScript (vanilla)
+- **Data Storage**: Chrome Storage API, optional Firebase Firestore
+- **Build Tools**: Node.js, npm for dependencies
+- **Documentation**: Mintlify for this docs site
+
+## Development Setup
+
+### Prerequisites
+- Node.js (v16 or higher)
+- Git
+- Chrome browser for testing
+- Text editor (VS Code recommended)
+
+### Local Setup
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-org/kart-companion.git
+   cd kart-companion
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Load extension in Chrome**:
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the extension directory
+
+4. **Start development**:
+   ```bash
+   npm run dev  # If available, or use live reload setup
+   ```
+
+### Project Structure
+
+```
+kart-companion/
+├── manifest.json          # Extension manifest
+├── background.js          # Service worker
+├── popup/                 # Extension popup UI
+│   ├── popup.html
+│   ├── popup.js
+│   └── popup.css
+├── content/               # Content scripts
+│   ├── content.js
+│   └── injected.js
+├── js/                    # Shared JavaScript
+├── images/                # Icons and assets
+├── website/               # Static website
+└── docs/                  # Documentation
+```
+
+## Core Components
+
+### Content Scripts
+
+#### content.js (Optimized)
+The main content script that injects into smashkarts.io:
+
+```javascript
+// WebSocket message interception
+const originalSend = WebSocket.prototype.send;
+WebSocket.prototype.send = function(data) {
+    // Intercept and process messages
+    processWebSocketMessage(data);
+    return originalSend.call(this, data);
+};
+
+// Console logging interception
+const originalLog = console.log;
+console.log = function(...args) {
+    // Process game events from console
+    processConsoleMessage(args);
+    return originalLog.apply(console, args);
+};
+```
+
+#### injected.js (Optimized)
+Handles HUD rendering and DOM manipulation:
+
+```javascript
+// Create HUD elements
+function createHUD() {
+    const hud = document.createElement('div');
+    hud.id = 'kart-companion-hud';
+    hud.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+    `;
+    document.body.appendChild(hud);
+    return hud;
+}
+
+// Update HUD with throttled rendering
+function updateHUD(data) {
+    requestAnimationFrame(() => {
+        // Update HUD elements
+        updateKills(data.kills);
+        updateDeaths(data.deaths);
+        updateKDR(data.kdr);
+    });
+}
+```
+
+### Background Service
+
+Handles cross-tab communication and Firebase integration:
+
+```javascript
+// Message handling
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    switch (message.type) {
+        case 'matchComplete':
+            handleMatchComplete(message.data);
+            break;
+        case 'OPEN_VISUALIZERS':
+            openVisualizersTab();
+            break;
+    }
+});
+
+// Firebase integration
+async function storeMatchData(matchData) {
+    if (firebaseEnabled) {
+        try {
+            await firebase.firestore()
+                .collection('matches')
+                .add(matchData);
+        } catch (error) {
+            console.error('Firebase error:', error);
+        }
+    }
+}
+```
+
+### Popup Interface
+
+The extension popup provides user controls:
+
+```javascript
+// Initialize popup
+document.addEventListener('DOMContentLoaded', () => {
+    loadStats();
+    setupEventListeners();
+});
+
+// Load and display stats
+async function loadStats() {
+    const data = await chrome.storage.local.get(['matchHistory', 'currentStats']);
+    renderStats(data);
+}
+
+// Handle user interactions
+function setupEventListeners() {
+    document.getElementById('exportBtn').addEventListener('click', exportStats);
+    document.getElementById('importBtn').addEventListener('click', importStats);
+}
+```
+
+## Data Collection
+
+### WebSocket Interception
+
+The extension monitors WebSocket messages for game events:
+
+- **Message Types**: gameStart, playerKill, playerDeath, gameEnd
+- **Throttling**: Messages processed at ~60fps to prevent lag
+- **Filtering**: Only relevant messages are parsed for performance
+
+### Console Log Analysis
+
+Game events are logged to console and intercepted:
+
+```javascript
+// Pattern matching for events
+const eventPatterns = {
+    kill: /destroyed_human/,
+    death: /player_died/,
+    matchStart: /game_started/,
+    matchEnd: /game_ended/
+};
+```
+
+### DOM Monitoring
+
+Mutation observers track UI changes:
+
+```javascript
+// Observe game state changes
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+            detectGameStateChange(mutation);
+        }
+    });
+});
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+```
+
+## Performance Optimizations
+
+### Message Throttling
+```javascript
+const MESSAGE_THROTTLE_INTERVAL = 16; // ~60fps
+let lastMessageTime = 0;
+
+function shouldProcessMessage() {
+    const now = Date.now();
+    if (now - lastMessageTime < MESSAGE_THROTTLE_INTERVAL) {
+        return false;
+    }
+    lastMessageTime = now;
+    return true;
+}
+```
+
+### Storage Batching
+```javascript
+let storageQueue = [];
+let storageTimeout = null;
+const STORAGE_BATCH_DELAY = 100;
+
+function queueStorageOperation(operation) {
+    storageQueue.push(operation);
+    if (!storageTimeout) {
+        storageTimeout = setTimeout(processStorageQueue, STORAGE_BATCH_DELAY);
+    }
+}
+```
+
+### DOM Query Caching
+```javascript
+let cachedElements = new Map();
+const CACHE_DURATION = 5000;
+
+function getCachedElement(selector) {
+    const cached = cachedElements.get(selector);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.element;
+    }
+    const element = document.querySelector(selector);
+    cachedElements.set(selector, { element, timestamp: Date.now() });
+    return element;
+}
+```
+
+## Contributing
+
+### Code Style
+- Use ES6+ features
+- Follow standard JavaScript naming conventions
+- Add JSDoc comments for functions
+- Use async/await for asynchronous operations
+
+### Testing
+- Manual testing in Chrome
+- Test on different game modes
+- Verify performance impact
+- Check cross-browser compatibility
+
+### Pull Request Process
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit PR with description
+6. Wait for review and merge
+
+### Issue Reporting
+- Use GitHub Issues for bugs and features
+- Include Chrome version and OS
+- Provide steps to reproduce
+- Attach console logs if applicable
+
+## API Reference
+
+### Message Types
+
+#### Content Script → Background
+```javascript
+{
+    type: 'matchComplete',
+    data: {
+        kills: 15,
+        deaths: 8,
+        matchStartTime: 1234567890,
+        matchEndTime: 1234577890,
+        map: 'Desert',
+        isSpecialMode: false
+    }
+}
+```
+
+#### Background → Content Script
+```javascript
+{
+    type: 'toggle-hud',
+    enabled: true,
+    settings: {
+        fontSize: 24,
+        fontColor: '#ffffff'
+    }
+}
+```
+
+### Storage Schema
+
+#### Local Storage Keys
+- `matchHistory_{skid}_{mode}`: Array of match objects
+- `gamesJoined_{skid}_{mode}`: Number
+- `gamesStarted_{skid}_{mode}`: Number
+- `gamesQuit_{skid}_{mode}`: Number
+- `matchesCompleted_{skid}_{mode}`: Number
+- `favoriteMatches_{skid}`: Object of favorite match IDs
+
+### Configuration
+
+#### HUD Settings
+```javascript
+{
+    fontSize: 24,
+    fontColor: '#ffffff',
+    fontFamily: 'Arial, sans-serif',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    position: { x: 10, y: 10 }
+}
+```
+
+## Deployment
+
+### Extension Publishing
+1. Update version in manifest.json
+2. Build production bundle
+3. Test thoroughly
+4. Submit to Chrome Web Store
+5. Update website with new version
+
+### Website Deployment
+- Hosted on GitHub Pages/Firebase
+- Static files only
+- Update links and version numbers
+
+## Security Considerations
+
+### Content Security Policy
+- Restrict script sources
+- Prevent inline scripts
+- Use HTTPS only
+
+### Data Privacy
+- Local storage by default
+- Encrypted exports
+- No external tracking
+
+### Permission Management
+- Minimal required permissions
+- User consent for optional features
+- Clear permission explanations
+
+## Future Development
+
+### Planned Features
+- Mobile app companion
+- Advanced analytics dashboard
+- Team statistics tracking
+- Tournament mode support
+
+### Technical Improvements
+- Service worker optimization
+- WebAssembly for heavy calculations
+- Machine learning for performance prediction
+
+---
+
+For questions or contributions, join our [Discord](https://discord.gg/...) or create a [GitHub Issue](https://github.com/.../issues).

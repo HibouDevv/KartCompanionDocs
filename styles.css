@@ -1,0 +1,163 @@
+/* Kart Companion Color Scheme: Blue and Orange/Gold */
+
+:root {
+  --primary-blue: #3498db;
+  --dark-blue: #217dbb;
+  --light-blue: #5dade2;
+  --orange: #f1c40f;
+  --gold: #f39c12;
+  --dark-orange: #e67e22;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-blue);
+}
+
+h1 {
+  border-bottom: 3px solid var(--orange);
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  border-left: 4px solid var(--gold);
+  padding-left: 1rem;
+}
+
+/* Links */
+a {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--dark-blue);
+  text-decoration: underline;
+}
+
+/* Buttons */
+button, .button {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, .button:hover {
+  background-color: var(--dark-blue);
+}
+
+/* Accent elements */
+.accent {
+  color: var(--orange);
+  font-weight: bold;
+}
+
+.highlight {
+  background-color: rgba(241, 196, 15, 0.1);
+  border-left: 4px solid var(--orange);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Code blocks */
+code {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: var(--dark-blue);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+pre code {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  display: block;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+tr:hover {
+  background-color: rgba(241, 196, 15, 0.1);
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Cards or feature boxes */
+.card {
+  border: 2px solid var(--light-blue);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: rgba(52, 152, 219, 0.02);
+}
+
+.card h3 {
+  color: var(--primary-blue);
+  margin-top: 0;
+}
+
+/* Navigation */
+.nav-link {
+  color: var(--primary-blue);
+}
+
+.nav-link:hover {
+  color: var(--orange);
+}
+
+/* Footer */
+footer {
+  background-color: rgba(52, 152, 219, 0.02);
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .card {
+    padding: 0.75rem;
+  }
+  
+  button, .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}

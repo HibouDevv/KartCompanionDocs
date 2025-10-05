@@ -1,0 +1,24 @@
+{
+  "name": "kartcompaniondocs",
+  "version": "1.0.0",
+  "description": "Use the starter kit to get your docs deployed and ready to customize.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HibouDevv/KartCompanionDocs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/HibouDevv/KartCompanionDocs/issues"
+  },
+  "homepage": "https://github.com/HibouDevv/KartCompanionDocs#readme",
+  "dependencies": {
+    "mintlify": "^4.2.144"
+  }
+}

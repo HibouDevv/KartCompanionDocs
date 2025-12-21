@@ -60,19 +60,28 @@ Kart Companion is built as a Chrome Manifest V3 extension with the following com
 
 ```
 kart-companion/
-├── manifest.json          # Extension manifest
-├── background.js          # Service worker
-├── popup/                 # Extension popup UI
-│   ├── popup.html
-│   ├── popup.js
-│   └── popup.css
-├── content/               # Content scripts
-│   ├── content.js
-│   └── injected.js
-├── js/                    # Shared JavaScript
-├── images/                # Icons and assets
-├── website/               # Static website
-└── docs/                  # Documentation
+├── manifest.json              # Extension manifest (v3)
+├── background.js              # Service worker for Firebase sync
+├── popup.html                 # Extension popup interface
+├── popup.js                   # Popup functionality
+├── popup.css                  # Popup styling
+├── js/                        # Core JavaScript modules
+│   ├── content-optimized.js   # WebSocket interception & HUD
+│   ├── injected-optimized.js  # Game DOM manipulation
+│   ├── match-history.js       # Match history UI
+│   ├── popup.js               # Popup logic (duplicate)
+│   ├── stats.js               # Statistics calculations
+│   ├── visualizers.js         # Data visualization
+│   └── player-card.js         # Player card generation
+├── images/                    # Icons and assets
+├── match-viewer.html          # Match sharing page
+├── match-viewer.js            # Match viewer functionality
+├── visualizers.html           # Analytics dashboard
+├── visualizers.js             # Visualization logic
+├── about.html                 # About page
+├── faq.html                   # FAQ page
+├── styles.css                 # Shared styles
+└── docs/                      # Documentation (Mintlify)
 ```
 
 ## Core Components

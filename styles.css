@@ -1,12 +1,27 @@
 /* Kart Companion Color Scheme: Blue and Orange/Gold */
 
 :root {
-  --primary-blue: #3498db;
-  --dark-blue: #217dbb;
-  --light-blue: #5dade2;
-  --orange: #f1c40f;
-  --gold: #f39c12;
-  --dark-orange: #e67e22;
+  /* Light mode - use readable colors */
+  --mint-color-text: #1e1e1e;
+  --mint-color-background: #f5f5f5;
+  --mint-token-keyword: #d73a49;
+  --mint-token-string: #22863a;
+  --mint-token-function: #6f42c1;
+  --mint-token-comment: #6a737d;
+  --mint-token-constant: #005cc5;
+  --mint-token-punctuation: #24292e;
+}
+
+/* Dark mode */
+.dark {
+  --mint-color-text: #74b9ff;
+  --mint-color-background: #000000;
+  --mint-token-keyword: #ff7b72;
+  --mint-token-string: #a5d6ff;
+  --mint-token-function: #d2a8ff;
+  --mint-token-comment: #8b949e;
+  --mint-token-constant: #79c0ff;
+  --mint-token-punctuation: #c9d1d9;
 }
 
 /* Headings */
@@ -64,22 +79,32 @@ button:hover, .button:hover {
 }
 
 /* Code blocks */
-code {
-  background-color: rgba(52, 152, 219, 0.1);
-  color: var(--dark-blue);
+/* code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 pre code {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background-color: var(--pre-bg);
+  border: 1px solid var(--pre-border);
   display: block;
   padding: 1rem;
   overflow-x: auto;
+  color: var(--text-primary);
 }
-
+*/
+/* Mintlify specific overrides */
+/* .mintlify code,
+.mintlify pre code,
+[data-theme] code,
+[data-theme] pre code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+*/
 /* Tables */
 table {
   border-collapse: collapse;

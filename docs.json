@@ -25,12 +25,18 @@
               "quickstart"
             ]
           },
-          {
-            "group": "Using Kart Companion",
-            "pages": [
-              "user-guide"
-            ]
-          }
+        {
+          "group": "Using Kart Companion",
+          "pages": [
+            "user-guide"
+          ]
+        },
+        {
+          "group": "FAQ",
+          "pages": [
+            "faq"
+          ]
+        }
         ]
       },
       {

@@ -24,6 +24,14 @@
   --mint-token-punctuation: #c9d1d9;
 }
 
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
   color: var(--primary-blue);
@@ -176,13 +184,21 @@ footer {
   h1 {
     font-size: 2rem;
   }
-  
+
   .card {
     padding: 0.75rem;
   }
-  
+
   button, .button {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
+}
+
+/* Ensure code block copy button icons are visible */
+.code-block button svg,
+[class*="code"] button svg {
+  display: inline-block;
+  visibility: visible;
+  opacity: 1;
 }
